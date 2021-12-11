@@ -1,0 +1,12 @@
+name: femtastic
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pyyaml
+  - jupyterlab
+  - mshr
+  - matplotlib
+  - fenics
+  - glob2
+  - pandas
