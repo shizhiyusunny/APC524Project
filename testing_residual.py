@@ -3,6 +3,7 @@ from fenics import *
 from dolfin import *
 from mshr import *
 import matplotlib.pyplot as plt
+from residual import function, residual
 
 # Create rectangular mesh with two circular inclusions
 N = 100
@@ -49,7 +50,6 @@ right.mark(boundaries, 2)
 top.mark(boundaries, 3)
 bottom.mark(boundaries, 4)
 
-
 # elastic constants of the matrix and two circular inclusions
 E_1 = 1
 E_2 = 10
@@ -57,7 +57,6 @@ E_3 = 0.1
 nu_1 = 0.3
 nu_2 = 0.2
 nu_3 = 0.1
-
 
 # define class for calculating the Young's modulus over the whole domain
 class E_class(UserExpression):
@@ -105,79 +104,10 @@ MFS = FunctionSpace(mesh, MixedElement([(P1*P1),(R*R),R]))
 f  = Function(MFS)
 u, c_trans, c_rot = split(f)
 
-#external load
-sigma_xx = 0.2*E_1
-sigma_xy = 0
-sigma_yy = 0
-sigma_0 = Constant(((sigma_xx,sigma_xy),(sigma_xy,sigma_yy)))
-#unit normal vector to the boundary
-n = FacetNormal(mesh)
+material_constants = {'mu':mu, 'lambda':Lambda}
 
-class FunctionW:
-    def __init__(self, f):
-        u, c_trans, c_rot = split(f)
-        self.displacement = u
-        self.lm_trans = c_trans
-        self.lm_rot = c_rot
-        self.dim = 2
-        self.unknown = f
-
-class EnergyFunctional:
-    def handler():
-        energy_functionals = []
-        tractions = []
-        energy_functionals.append(LinearElasticity())
-        traction = Traction(sigma_0 * n)
-        energy_functionals.append(traction)
-        tractions.append(traction)
-        energy_functionals.append(LagrangeMultiplier())
-        return energy_functionals, tractions
-    def return_energy(self, f):
-        pass
-
-class LinearElasticity(EnergyFunctional):
-    def return_energy(self, f):
-       u = f.displacement
-       epsilon = sym(grad(u))
-       sigma = 2*mu*epsilon + Lambda*tr(epsilon)*Identity(d)
-       elastic_energy = 1/2*inner(sigma,epsilon)*dx
-       return elastic_energy
-
-class Traction(EnergyFunctional):
-    def __init__(self, t):
-        self.traction = t
-    def return_energy(self, f):
-        virtual_work = -dot(self.traction,u)*ds
-        return virtual_work
-
-class LagrangeMultiplier(EnergyFunctional):
-    def return_energy(self, f):
-        c_trans = f.lm_trans
-        c_rot = f.lm_rot
-        r=Expression(('x[0]','x[1]'),degree=1)
-        constraints = dot(c_trans,u)*dx + c_rot*(r[0]*u[1]-r[1]*u[0])*dx
-        return constraints
-
-class Residual:
-    def __init__(self):
-        self.energy_functionals, self.tractions = EnergyFunctional.handler()
-
-    def calculate_residual(self, f):
-        first = True
-        for energy_functional in self.energy_functionals:
-            if first:
-                self.free_energy = energy_functional.return_energy(f)
-                first = False
-            else:
-                self.free_energy += energy_functional.return_energy(f)
-        self.unknown = f.unknown
-        self.Res = derivative(self.free_energy, self.unknown)
-
-    def solve(self):
-        solve(self.Res == 0, self.unknown)
-
-func = FunctionW(f)
-residual = Residual()
+func = function.FunctionW(f)
+residual = residual.Residual(mesh, material_constants)
 residual.calculate_residual(func)
 residual.solve()
 
