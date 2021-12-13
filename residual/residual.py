@@ -1,8 +1,8 @@
 from . import energy
 from fenics import *
 class Residual:
-    def __init__(self, mesh, material_constants):
-        self.energy_functionals, self.tractions = energy.EnergyFunctional.handler(mesh, material_constants)
+    def __init__(self, inputs, mesh, material_constants):
+        self.energy_functionals, self.tractions = energy.EnergyFunctional.handler(mesh, inputs, material_constants)
 
     def calculate_residual(self, f):
         first = True

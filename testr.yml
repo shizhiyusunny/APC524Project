@@ -1,0 +1,11 @@
+Tractions:
+  - sigma:
+      xx: 0.2
+      xy: 0
+      yy: 0
+Elasticity: Linear
+Constraints:
+  - Lagrange Multiplier:
+      dof: translation
+  - Lagrange Multiplier:
+      dof: rotation
