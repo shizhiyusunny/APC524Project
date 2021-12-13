@@ -7,7 +7,7 @@ class EnergyFunctional:
         for key, val in inputs.items():
             if key == 'Elasticity':
                 energy_functionals.append(Elasticity.handler(val, material_constants))
-                print('Created elastic energy')
+                print('Created elasticity')
             elif key == 'Tractions':
                 for trac in val:
                     traction = Traction(trac, mesh)
