@@ -106,8 +106,13 @@ u, c_trans, c_rot = split(f)
 
 material_constants = {'mu':mu, 'lambda':Lambda}
 
+#read yaml file
+import yaml
+with open('testr.yml') as file:
+    inputs = yaml.load(file, Loader=yaml.FullLoader)
+
 func = function.FunctionW(f)
-residual = residual.Residual(mesh, material_constants)
+residual = residual.Residual(inputs, mesh, material_constants)
 residual.calculate_residual(func)
 residual.solve()
 
