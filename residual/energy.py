@@ -2,7 +2,8 @@ from fenics import *
 
 class EnergyFunctional:
     def handler(mesh, inputs, material_constants):
-        from . import elasticity, traction, lagrange
+        from . import traction, lagrange
+        from .elasticity import elasticity
         energy_functionals = []
         tractions = []
         for key, val in inputs.items():

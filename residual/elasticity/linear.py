@@ -1,13 +1,7 @@
 from fenics import *
-from . import energy
+from . import elasticity
 
-class Elasticity(energy.EnergyFunctional):
-    def handler(inputs, material_constants):
-        return LinearElasticity(material_constants)
-    def return_energy(self, f):
-        pass
-
-class LinearElasticity(Elasticity):
+class LinearElasticity(elasticity.Elasticity):
     def __init__(self, material_constants):
         self.mu = material_constants['mu']
         self.Lambda = material_constants['lambda']
