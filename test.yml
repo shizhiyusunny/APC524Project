@@ -1,3 +1,19 @@
+Mesh:
+  Domain:
+    Rectangle:
+      End Points:
+        - [-0.5, -0.5]
+        - [0.5, 0.5]
+    Marker: 1
+  Subdomains:
+    - Circle:
+        Center: [0.,0.43]
+        Radius: 0.05 
+      Marker: 2
+    - Circle:
+        Center: [-0.15,0.35]
+        Radius: 0.08
+      Marker: 3
 Material Constant:
   E:
     - marker: 1
