@@ -4,6 +4,7 @@ from dolfin import *
 from mshr import *
 import matplotlib.pyplot as plt
 from residual import residual
+from annealer import annealer
 import yaml
 
 # Create rectangular mesh with two circular inclusions
@@ -98,17 +99,14 @@ Lambda = E*nu/(1-nu*nu)
 material_constants = {'mu':mu, 'lambda':Lambda}
 
 #read yaml file
-with open('testr.yml') as file:
+with open('test.yml') as file:
     inputs = yaml.load(file, Loader=yaml.FullLoader)
 
-func, residual = residual.Residual.builder(inputs, mesh, material_constants)
-for i in range(1,11):
-    residual.update_tractions(i/10)
-    residual.calculate_residual(func)
-    residual.solve()
-    print("Tot Free Energy = ",assemble(residual.free_energy))
+func, residual = residual.Residual.builder(inputs['Equilibrium'], mesh, material_constants)
+annealer = annealer.Annealer.build(inputs['Annealer'])
+annealer.stepper(residual, func)
+print("Free energy:", assemble(residual.free_energy))
 
-#calculate total free energy
 
 # export displacements
 VFS = VectorFunctionSpace(mesh, 'Lagrange', 1)
@@ -116,36 +114,3 @@ disp=project(func.displacement, VFS)
 disp.rename("displacements","")
 fileD = File("data/tractions_displacement.pvd");
 fileD << disp;
-"""
-# calculate and export von Mises stress
-FS = FunctionSpace(mesh, 'Lagrange', 1)
-devStress = sigma(u) - (1./d)*tr(sigma(u))*Identity(d)  # deviatoric stress
-von_Mises = project(sqrt(3./2*inner(devStress, devStress)), FS)
-von_Mises.rename("von Mises","")
-fileS = File("data/tractions_vonMises_stress.pvd");
-fileS << von_Mises;
-
-# calculate and export stress component sigma_xx
-sigma_xx = project(sigma(u)[0,0], FS)
-sigma_xx.rename("sigma_xx","")
-fileS = File("data/tractions_sigma_xx.pvd");
-fileS << sigma_xx;
-
-# calculate and export stress component sigma_yy
-sigma_yy = project(sigma(u)[1,1], FS)
-sigma_yy.rename("sigma_yy","")
-fileS = File("data/tractions_sigma_yy.pvd");
-fileS << sigma_yy;
-
-# calculate and export stress component sigma_xy
-sigma_xy = project(sigma(u)[0,1], FS)
-sigma_xy.rename("sigma_xy","")
-fileS = File("data/tractions_sigma_xy.pvd");
-fileS << sigma_xy;
-
-# export Young's modulus
-young = project(E, FS)
-young.rename("Young's modulus","")
-fileS = File("data/tractions_young.pvd");
-fileS << young;
-"""

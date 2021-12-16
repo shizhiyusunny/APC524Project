@@ -2,6 +2,7 @@ from fenics import *
 class FunctionW:
     def __init__(self, inputs, mesh, lm):
         degreeElements = 1
+        self.mesh = mesh
         self.dim = inputs['dim']
         if lm == []:
             MFS = VectorFunctionSpace(mesh, 1, inputs['dim'])

@@ -14,7 +14,7 @@ class Traction(energy.EnergyFunctional):
 
     def return_energy(self, f):
         u = f.displacement
-        virtual_work = -dot(self.pre_factor*self.traction,u)*ds
+        virtual_work = -dot(self.pre_factor*self.traction,u)*ds(f.mesh)
         return virtual_work
 
     def update(self, val):
