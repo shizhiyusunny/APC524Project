@@ -3,7 +3,8 @@ from fenics import *
 from dolfin import *
 from mshr import *
 import matplotlib.pyplot as plt
-from residual import function, residual
+from residual import residual
+import yaml
 
 # Create rectangular mesh with two circular inclusions
 N = 100
@@ -94,25 +95,13 @@ nu = nu_class(degree=1)
 mu = E/2/(1+nu)
 Lambda = E*nu/(1-nu*nu)
 
-#define function space with mixed finite elements (displacements + 3 Lagrange multipliers)
-degreeElements = 1
-P1 = FiniteElement('Lagrange', mesh.ufl_cell(), degreeElements)
-R = FiniteElement('Real', mesh.ufl_cell(), 0)
-MFS = FunctionSpace(mesh, MixedElement([(P1*P1),(R*R),R]))
-
-#define function and split it into displacements u and Lagrange multipliers
-f  = Function(MFS)
-u, c_trans, c_rot = split(f)
-
 material_constants = {'mu':mu, 'lambda':Lambda}
 
 #read yaml file
-import yaml
 with open('testr.yml') as file:
     inputs = yaml.load(file, Loader=yaml.FullLoader)
 
-func = function.FunctionW(f)
-residual = residual.Residual(inputs, mesh, material_constants)
+func, residual = residual.Residual.builder(inputs, mesh, material_constants)
 residual.calculate_residual(func)
 residual.solve()
 
@@ -121,7 +110,7 @@ print("Tot Free Energy = ",assemble(residual.free_energy))
 
 # export displacements
 VFS = VectorFunctionSpace(mesh, 'Lagrange', 1)
-disp=project(u, VFS)
+disp=project(func.displacement, VFS)
 disp.rename("displacements","")
 fileD = File("data/tractions_displacement.pvd");
 fileD << disp;

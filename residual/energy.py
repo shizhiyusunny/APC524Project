@@ -6,6 +6,7 @@ class EnergyFunctional:
         from .elasticity import elasticity
         energy_functionals = []
         tractions = []
+        lm = []
         for key, val in inputs.items():
             if key == 'Elasticity':
                 energy_functionals.append(elasticity.Elasticity.handler(val, material_constants))
@@ -20,7 +21,8 @@ class EnergyFunctional:
                 for v in val:
                     if 'Lagrange Multiplier' in v:
                         energy_functionals.append(lagrange.LagrangeMultiplier(v['Lagrange Multiplier']))
+                        lm.append(energy_functionals[-1])
                 print('Created constraints')
-        return energy_functionals, tractions
+        return energy_functionals, tractions, lm
     def return_energy(self, f):
         pass

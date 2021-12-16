@@ -1,3 +1,5 @@
+displacement:
+  dim: 2
 Tractions:
   - sigma:
       xx: 0.2

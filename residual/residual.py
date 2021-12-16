@@ -1,8 +1,13 @@
 from . import energy
+from . import funcw
 from fenics import *
 class Residual:
+    def builder(inputs, mesh, material_constants):
+        residual = Residual(inputs, mesh, material_constants)
+        func = funcw.FunctionW(inputs['displacement'], mesh, residual.lm)
+        return func, residual
     def __init__(self, inputs, mesh, material_constants):
-        self.energy_functionals, self.tractions = energy.EnergyFunctional.handler(mesh, inputs, material_constants)
+        self.energy_functionals, self.tractions, self.lm = energy.EnergyFunctional.handler(mesh, inputs, material_constants)
 
     def calculate_residual(self, f):
         first = True
