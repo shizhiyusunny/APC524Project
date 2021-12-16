@@ -5,6 +5,7 @@ from mshr import *
 import matplotlib.pyplot as plt
 from residual import residual
 from annealer import annealer
+from material import material
 import yaml
 
 # Create rectangular mesh with two circular inclusions
@@ -21,92 +22,15 @@ mesh = generate_mesh(domain, N)
 d = mesh.topology().dim() # dimensionality of the problem
 markers = MeshFunction("size_t", mesh, d , mesh.domains())
 
-
-# define boundary subdomains
-class Left(SubDomain):
-    def inside(self, x, on_boundary):
-        return near(x[0], -L/2)
-
-class Right(SubDomain):
-    def inside(self, x, on_boundary):
-        return near(x[0], +L/2)
-
-class Top(SubDomain):
-    def inside(self, x, on_boundary):
-        return near(x[1], L/2)
-
-class Bottom(SubDomain):
-    def inside(self, x, on_boundary):
-        return near(x[1], -L/2)
-
-left = Left()
-right = Right()
-top = Top()
-bottom = Bottom()
-
-# mark boundary subdomains with markers 1, 2, 3, 4
-boundaries = MeshFunction("size_t", mesh, d-1, 0)
-boundaries.set_all(0)
-left.mark(boundaries, 1)
-right.mark(boundaries, 2)
-top.mark(boundaries, 3)
-bottom.mark(boundaries, 4)
-
-# elastic constants of the matrix and two circular inclusions
-E_1 = 1
-E_2 = 10
-E_3 = 0.1
-nu_1 = 0.3
-nu_2 = 0.2
-nu_3 = 0.1
-
-# define class for calculating the Young's modulus over the whole domain
-class E_class(UserExpression):
-    def __init__(self, **kwargs):
-        self.markers = markers
-        super().__init__(**kwargs)
-    def eval_cell(self, value, x, ufc_cell):
-        if markers[ufc_cell.index] == 1:
-            value[0] = E_1
-        elif markers[ufc_cell.index] == 2:
-            value[0] = E_2
-        else:
-            value[0] = E_3
-    def value_shape(self):
-        return ()
-
-# define class for calculating the Poisson's ratio over the whole domain
-class nu_class(UserExpression):
-    def __init__(self, **kwargs):
-        self.markers = markers
-        super().__init__(**kwargs)
-    def eval_cell(self, value, x, ufc_cell):
-        if markers[ufc_cell.index] == 1:
-            value[0] = nu_1
-        elif markers[ufc_cell.index] == 2:
-            value[0] = nu_2
-        else:
-            value[0] = nu_3
-    def value_shape(self):
-        return ()
-
-# functions of elastic constants on the whole domain
-E = E_class(degree=1)
-nu = nu_class(degree=1)
-mu = E/2/(1+nu)
-Lambda = E*nu/(1-nu*nu)
-
-material_constants = {'mu':mu, 'lambda':Lambda}
-
 #read yaml file
 with open('test.yml') as file:
     inputs = yaml.load(file, Loader=yaml.FullLoader)
 
+material_constants = material.MaterialConstant.builder(markers, inputs['Material Constant'])
 func, residual = residual.Residual.builder(inputs['Equilibrium'], mesh, material_constants)
 annealer = annealer.Annealer.build(inputs['Annealer'])
 annealer.stepper(residual, func)
 print("Free energy:", assemble(residual.free_energy))
-
 
 # export displacements
 VFS = VectorFunctionSpace(mesh, 'Lagrange', 1)
