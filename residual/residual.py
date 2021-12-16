@@ -22,3 +22,7 @@ class Residual:
 
     def solve(self):
         solve(self.Res == 0, self.unknown)
+
+    def update_tractions(self, val):
+        for t in self.tractions:
+            t.update(val)

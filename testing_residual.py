@@ -102,11 +102,13 @@ with open('testr.yml') as file:
     inputs = yaml.load(file, Loader=yaml.FullLoader)
 
 func, residual = residual.Residual.builder(inputs, mesh, material_constants)
-residual.calculate_residual(func)
-residual.solve()
+for i in range(1,11):
+    residual.update_tractions(i/10)
+    residual.calculate_residual(func)
+    residual.solve()
+    print("Tot Free Energy = ",assemble(residual.free_energy))
 
 #calculate total free energy
-print("Tot Free Energy = ",assemble(residual.free_energy))
 
 # export displacements
 VFS = VectorFunctionSpace(mesh, 'Lagrange', 1)
