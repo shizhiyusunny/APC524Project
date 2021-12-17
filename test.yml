@@ -46,3 +46,8 @@ Equilibrium:
 Annealer:
   type: Constant Step
   Number of Steps: 10
+Post-Processing:
+  - type: pvd
+    iterative: True
+  - type: plot
+    iterative: False

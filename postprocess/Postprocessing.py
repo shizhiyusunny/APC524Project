@@ -1,19 +1,14 @@
-from abc import ABC, abstractmethod
-
-class Postprocessing(ABC):
-    @abstractmethod
-    def store(t,f):
+class Postprocessing:
+    def build(inputs):
+        processes = []
+        from . import storePVD,storeNPY,storePLT
+        for i in inputs:
+            if i['type'] == 'pvd':
+                processes.append(storePVD.StorePVD(i))
+            elif i['type']=="plot":
+                processes.append(storePLT.StorePLT(i))
+        return processes
+    def __init__(self, inputs):
+        self.iterative = inputs['iterative']
+    def store(self, f, t):
         pass
-    def postprocess(t,process,flag):
-        from . import toPVD,toNPY,toPLT
-        for i in process:
-            if i=="pvd" and flag==0:
-                P=toPVD.toPVD()
-                P.store(t,f)
-            elif i=="npy" and flag==0:
-                P=toNPY.toNPY()
-                P.store(t,f)
-            elif i=="pltDisp" and flag==1:
-                P=toPLT.toDisPLT()
-                P.store(t,f)
-
