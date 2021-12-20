@@ -33,16 +33,3 @@ disp=project(func.displacement, VFS)
 disp.rename("displacements","")
 fileD = File("data/tractions_displacement.pvd");
 fileD << disp;
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-

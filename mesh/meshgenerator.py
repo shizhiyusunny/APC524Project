@@ -240,7 +240,6 @@ class MeshGenerator:
                 key = list(sd.items())[0][0]
                 domain_sub = self.domain_generator(key, sd[key])
                 domain.set_subdomain(sd['Marker'], domain_sub)
-
             if 'Division' in self.meshdict:
                 division = self.get_list1d(self.meshdict['Division'])
             else:

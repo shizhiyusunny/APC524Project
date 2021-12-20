@@ -58,6 +58,3 @@ class Shape:
     def cube(self, length):
         domain = self.box(length, length, length)
         return domain
-
-
-

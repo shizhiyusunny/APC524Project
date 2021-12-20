@@ -15,4 +15,3 @@ class SetShape:
     def subtraction(self):
         domain = self.domain1 - self.domain2
         return domain
-

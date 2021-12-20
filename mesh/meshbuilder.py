@@ -68,4 +68,3 @@ class MeshBuilder:
         mesh = self.MeshUnitSphere()
         mesh.coordinates()[:] = r * mesh.coordinates()[:]
         return mesh
-

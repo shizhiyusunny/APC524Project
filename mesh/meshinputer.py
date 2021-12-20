@@ -31,5 +31,4 @@ class MeshInputer:
         else:
             print("Unfortunately, the format of this meshfile does not our requirements.")
             return
-
         return mesh
