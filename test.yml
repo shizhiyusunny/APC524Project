@@ -1,0 +1,49 @@
+Mesh:
+  Domain:
+    Rectangle:
+      Center: 0, 0
+      Length: 1
+      Breadth: 1
+    Marker: 1
+  Subdomains:
+    - Circle:
+       Center: 0, 0.43
+       Radius: 0.05 
+      Marker: 2
+    - Circle:
+       Center: -0.15, 0.35
+       Radius: 0.08
+      Marker: 3
+Material Constant:
+  E:
+    - marker: 1
+      value: 1
+    - marker: 2
+      value: 10
+    - marker: 3
+      value: 0.1
+  nu:
+    - marker: 1
+      value: 0.3
+    - marker: 2
+      value: 0.2
+    - marker: 3
+      value: 0.1
+Equilibrium:
+  displacement:
+    dim: 2
+  Tractions:
+    - sigma:
+        xx: 0.2
+        xy: 0
+        yy: 0
+  Elasticity: Linear
+  Constraints:
+    - Lagrange Multiplier:
+        dof: translation
+    - Lagrange Multiplier:
+        dof: rotation
+Annealer:
+  type: Constant Step
+  Number of Steps: 10
+
