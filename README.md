@@ -1,1 +1,1 @@
-# APC524Project
+# FEM wrapper for Solid Mechanics simulations on Open-Source platforms
