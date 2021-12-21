@@ -27,3 +27,12 @@ $ python driver.py test.yml
 to run the whole program. Depending on users' parameter, they will get .pvd, .txt, or .png files, along with the optimal mesh size calculation (depending on whether turning on the optimizer).
 
 ## Building Documentation
+We used Sphinx for automated documentation. To build documents, if you want a pdf file , use
+```console
+$ make latexpdf
+```
+to get LaTex pdf version of the documentation. If you want an html file, use
+```console
+$ make html
+```
+to get html version of the documents.
