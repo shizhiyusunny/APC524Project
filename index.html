@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to FEMtactic’s documentation! &#8212; FEMtactic 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="src" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-femtactic-s-documentation">
+<h1>Welcome to FEMtactic’s documentation!<a class="headerlink" href="#welcome-to-femtactic-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>We aim to create a python-based utility that takes a user written parameter file as input to build equations and run FEM simulations. In this project, we’ll be focusing on solid mechanics problems where loading and boundary conditions are specified and use open source FEM packages in the background to run the FEM simulations. The current code is written based on using FEniCS syntax, but we hope that this wrapper can work on any open source FEM packages. This is achieved through a translator class that translates between different FEM solver syntax. This translator class allows future users to implement our wrapper for other FEM solvers if necessary.</p>
+</div>
+<div class="section" id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<p>Mesh:
+Class Shape: This class generates domains for different shapes.
+Class SetShape: This class calculates a new domain based on the relationship between two input domains.
+Class MeshInputer: This class generates mesh if users choose to input a mesh file.
+Class MeshBuilder: This class generates mesh based on the domain we got before if users choose to generate mesh in fenics.
+Class MeshGenerator: This class reads the .yml file and generates a mesh object.</p>
+<p>Residual:
+Class residual: This class serves as the connection between the residual section and the annealer section. The annealer repeatedly updates the traction, calculates the residual, and solves for the displacement through this class.
+The builder method builds the residual object the function object.
+The calculate_residual method calculates the total energy given the current traction and user’s specification. This function also calculates the gradient of the energy function (residual).
+The solve method solves the gradient of the energy function (residual) to be 0.
+The update_traction method updates the traction for simulated annealing.</p>
+<p>Energy:
+Class EnergyFunctional: This class examines the user’s input yaml file and return a list of the use specified energy types. Residual class uses this class to determine which energy to add to the total energy equation.
+The handler method searches from the input yaml file and append relevant specifications to a list, and then returns it.</p>
+<p>Funcw
+Classs FunctionW: This class is the customized function space. It creates the required function space based on the dimension of the problem and the number of Lagrange multiplier. This class only has a constructor.</p>
+<p>Traction
+Class Tractions: This class calculates the energy for the current traction. It will be used to sum up total energies in residual class.
+The create_traction_object method creates the traction on each node based on the mesh.
+The return_energy method returns the virtual_work as the dot product of stress and displacement.
+The update method updates the traction of the traction object.</p>
+<p>Lagrange:
+Class LagrangeMultipliers: This class calculates the energy for the Lagrange constraints. It will be used to sum up total energies in residual class.
+The return_energy method calculates the total constraint energy.</p>
+<p>Elasticity
+Class Elasticity: an abstract class that determines which elasticity model the user want to use and returns the energy. “Linear Elasticity” is the default. It will be used to sum up total energies in residual class.
+The handler method determines the user specified energy model.
+The return energy method is an abstract method.</p>
+<p>Linear
+Class LinearElasticity: a concrete class inherited from elasticity class.
+The return_energy returns the linear elastic_energy.</p>
+<p>Annealer:
+Class Annealer: This is an abstract class that determines the user specified simulated annealing method. “Constantstep” is the default.
+The build method determines the user specified energy model.
+The stepper method is an abstract method.</p>
+<p>Class ConstatntStep: This is a concrete class inherited from annealer class
+The stepper method iterates through the simulated annealing using constant step approach.</p>
+<p>Postprocessing:
+Class postprocessing: This is an abstract class that determines the user specified output data type and implement it.
+The postprocess method determines user specified output times and calls the corresponding methods.
+The store method is an abstract method.</p>
+<p>Class toNPY: This is a concrete class inherited from postprocessing class used to output .txt files.
+The store method stores the result to .txt file.
+Class toPVD: This is a concrete class inherited from postprocessing class used to output .pvd files.
+The store method stores the result to .pvd file.
+Class toPLT: This is a concrete class inherited from postprocessing class used to visualize the result.
+The store method plots the mesh and the nodal displacement results, and store the plot to a .png file.</p>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="annealer.html">annealer package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="driver.html">driver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="material.html">material package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mesh.html">mesh package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html">optimization package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="postprocess.html">postprocess package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="residual.html">residual package</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">FEMtactic</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">src</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="modules.html" title="next chapter">src</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Anvitha Sudhakar, Yenan Shen, Zhiyu Shi.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
