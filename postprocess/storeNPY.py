@@ -1,16 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
-from . import Postprocessing
+from . import postProcessing
 from fenics import *
 
-class toNPY(Postprocessing.Postprocessing):
-    def store(t,f):
+class storeNPY(postProcessing.Postprocessing):
+    def store(self, f, iterative, t=1):
         u=f.displacement
         arr_u=u.compute_vertex_values()
         fileD = File("data/displacement.txt")
         fileD << arr_u
-

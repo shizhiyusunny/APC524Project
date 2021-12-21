@@ -3,5 +3,8 @@ class Annealer:
         from . import constantStep
         if inputs['type'] == 'Constant Step':
             return constantStep.ConstantStep(inputs)
-    def stepper():
+    def stepper(self):
         pass
+    def store_all(processes, f, t=1.):
+        for p in processes:
+            p.store(f, t)

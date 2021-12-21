@@ -1,3 +1,7 @@
+Optimizer:
+  Min Divisions: 10
+  Max Divisions: 100
+  Tolerance: 1.0e-6
 Mesh:
   Domain:
     Rectangle:
@@ -46,4 +50,8 @@ Equilibrium:
 Annealer:
   type: Constant Step
   Number of Steps: 10
-
+Post-Processing:
+  - type: pvd
+    iterative: True
+  - type: plot
+    iterative: False
