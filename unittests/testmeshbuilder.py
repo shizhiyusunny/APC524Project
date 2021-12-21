@@ -3,7 +3,7 @@
 
 
 import pytest
-from mesh import meshbuilder
+from ..mesh import meshbuilder
 from fenics import *
 from mshr import *
 
