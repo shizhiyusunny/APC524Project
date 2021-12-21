@@ -10,3 +10,4 @@ dependencies:
   - fenics
   - glob2
   - pandas
+  - filetype
