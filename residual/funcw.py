@@ -51,3 +51,9 @@ class FunctionW:
             self.lm_rot = c_rot
         self.displacement = u
         self.unknown = f
+
+    def calc_magnitude(self):
+        VFS = VectorFunctionSpace(self.mesh, 'Lagrange', self.dim)
+        u_m = project(self.displacement, VFS)
+        import numpy as np
+        return np.linalg.norm(u_m.compute_vertex_values())
