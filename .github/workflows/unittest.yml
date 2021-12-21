@@ -18,6 +18,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Test with pytest
       run: |
+        module load anaconda3/2020.11
+        conda env create -f env.yml
         python testmaterial.py
         python testshape.py
         python testmeshbuilder.py
