@@ -18,7 +18,6 @@ jobs:
     - uses: actions/checkout@v1
     - name: Test with pytest
       run: |
-        cd unittests
         python testmaterial.py
         python testshape.py
         python testmeshbuilder.py
