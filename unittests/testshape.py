@@ -2,7 +2,7 @@
 # coding: utf-8
 
 
-from mesh import shape, setshape
+from ..mesh import shape, setshape
 from fenics import *
 from mshr import *
 import pytest
