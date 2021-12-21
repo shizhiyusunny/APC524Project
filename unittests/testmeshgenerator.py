@@ -4,7 +4,7 @@
 
 from fenics import *
 from mshr import *
-from mesh import meshmenerator
+from ..mesh import meshmenerator
 import pytest
 
 
