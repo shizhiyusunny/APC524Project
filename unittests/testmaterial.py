@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from material import material
+from ..material import material
 import pytest
 
 
